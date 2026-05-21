@@ -4,8 +4,26 @@ from plyer import notification
 import threading
 import time
 
+running = False
+
+
+def notify_loop(title, message, interval):
+    global running
+
+    while running:
+        notification.notify(
+            title=title,
+            message=message,
+            timeout=10
+        )
+
+        print("Notification Sent")
+        time.sleep(interval)
+
 
 def start_notification():
+    global running
+
     title = title_entry.get()
     message = message_entry.get()
     interval = time_entry.get()
@@ -20,37 +38,37 @@ def start_notification():
         messagebox.showerror("Error", "Time must be a number")
         return
 
-    def notify_loop():
-        while True:
-            notification.notify(
-                title=title,
-                message=message,
-                timeout=10
-            )
+    if not running:
+        running = True
 
-            print("Notification Sent")
-            time.sleep(interval)
+        thread = threading.Thread(
+            target=notify_loop,
+            args=(title, message, interval)
+        )
 
-    thread = threading.Thread(target=notify_loop)
-    thread.daemon = True
-    thread.start()
+        thread.daemon = True
+        thread.start()
 
-    messagebox.showinfo("Started", "Notification service started")
+        messagebox.showinfo("Started", "Notifications Started")
 
 
-# Main Window
+def stop_notification():
+    global running
+    running = False
+    messagebox.showinfo("Stopped", "Notifications Stopped")
+
+
+# Window
 root = Tk()
-root.title("Desktop Notifier App")
+root.title("Desktop Notifier")
 root.geometry("400x350")
 root.resizable(False, False)
 
-# Heading
-heading = Label(
+Label(
     root,
     text="Desktop Notifier",
     font=("Arial", 18, "bold")
-)
-heading.pack(pady=10)
+).pack(pady=10)
 
 # Title
 Label(root, text="Notification Title").pack()
@@ -62,27 +80,27 @@ Label(root, text="Notification Message").pack()
 message_entry = Entry(root, width=40)
 message_entry.pack(pady=5)
 
-# Time Interval
+# Time
 Label(root, text="Time Interval (seconds)").pack()
 time_entry = Entry(root, width=40)
 time_entry.pack(pady=5)
 
-# Button
-start_btn = Button(
+# Start Button
+Button(
     root,
     text="Start Notification",
     command=start_notification,
     width=25,
     height=2
-)
-start_btn.pack(pady=20)
+).pack(pady=10)
 
-# Footer
-footer = Label(
+# Stop Button
+Button(
     root,
-    text="Made with Python",
-    font=("Arial", 10)
-)
-footer.pack(side=BOTTOM, pady=10)
+    text="Stop Notification",
+    command=stop_notification,
+    width=25,
+    height=2
+).pack(pady=5)
 
 root.mainloop()
