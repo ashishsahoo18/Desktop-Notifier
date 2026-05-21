@@ -1,11 +1,16 @@
 from plyer import notification
 import time
 
+TITLE = "Study Reminder"
+MESSAGE = "Take a short break and drink water."
+TIME_INTERVAL = 1800  # 30 minutes
+
 while True:
     notification.notify(
-        title="Reminder",
-        message="Dark water and take a short break. ",
+        title=TITLE,
+        message=MESSAGE,
         timeout=10
     )
 
-    time.sleep(1800)
+    print("Notification sent")
+    time.sleep(TIME_INTERVAL)
