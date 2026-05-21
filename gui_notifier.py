@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from plyer import notification
+import winsound
 import threading
 import time
 
@@ -16,6 +17,9 @@ def notify_loop(title, message, interval):
             message=message,
             timeout=10
         )
+
+        # Sound Play
+        winsound.MessageBeep()
 
         print("Notification Sent")
         time.sleep(interval)
@@ -150,4 +154,5 @@ Button(
     fg="white",
     activebackground="#d32f2f"
 ).pack(pady=5)
+
 root.mainloop()
